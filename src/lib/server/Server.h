@@ -62,11 +62,8 @@ public:
     //! Switch to screen data
     class SwitchToScreenInfo {
     public:
-        static SwitchToScreenInfo* alloc(const String& screen);
-
-    public:
-        // this is a C-string;  this type is a variable size structure
-        char            m_screen[1];
+        SwitchToScreenInfo(const String& screen): m_screen{screen} {}
+        String            m_screen;
     };
 
     //! Switch in direction data

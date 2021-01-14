@@ -534,7 +534,7 @@ Server::switchScreen(BaseClientProxy* dst,
 		}
 
 		Server::SwitchToScreenInfo* info =
-			Server::SwitchToScreenInfo::alloc(m_active->getName());
+			new Server::SwitchToScreenInfo(m_active->getName());
 		m_events->addEvent(Event(m_events->forServer().screenSwitched(), this, info));
 	}
 	else {
@@ -1430,7 +1430,7 @@ Server::handleSwitchToScreenEvent(const Event& event, void*)
 
 	ClientList::const_iterator index = m_clients.find(info->m_screen);
 	if (index == m_clients.end()) {
-		LOG((CLOG_DEBUG1 "screen \"%s\" not active", info->m_screen));
+		LOG((CLOG_DEBUG1 "screen \"%s\" not active", info->m_screen.c_str()));
 	}
 	else {
 		jumpToScreen(index->second);
@@ -2343,16 +2343,6 @@ Server::LockCursorToScreenInfo::alloc(State state)
 //
 // Server::SwitchToScreenInfo
 //
-
-Server::SwitchToScreenInfo*
-Server::SwitchToScreenInfo::alloc(const String& screen)
-{
-	SwitchToScreenInfo* info =
-		(SwitchToScreenInfo*)malloc(sizeof(SwitchToScreenInfo) +
-								screen.size());
-	strcpy(info->m_screen, screen.c_str());
-	return info;
-}
 
 
 //

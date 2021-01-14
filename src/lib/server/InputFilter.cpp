@@ -397,7 +397,7 @@ InputFilter::SwitchToScreenAction::perform(const Event& event)
 
     // send event
     Server::SwitchToScreenInfo* info =
-        Server::SwitchToScreenInfo::alloc(screen);
+        new Server::SwitchToScreenInfo(screen);
     m_events->addEvent(Event(m_events->forServer().switchToScreen(),
                                 event.getTarget(), info,
                                 Event::kDeliverImmediately));
