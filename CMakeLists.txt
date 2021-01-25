@@ -310,9 +310,7 @@ endif()
 #
 # OpenSSL
 #
-if(WIN32)
-    set(OPENSSL_USE_STATIC_LIBS TRUE)
-endif()
+set(OPENSSL_USE_STATIC_LIBS TRUE)
 find_package(OpenSSL REQUIRED)
 
 #
