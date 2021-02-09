@@ -4,6 +4,7 @@
     <name>Synergy</name>
     <url type="homepage">https://symless.com/synergy</url>
     <summary>Keyboard and mouse sharing solution</summary>
+     <launchable type="desktop-id">synergy.desktop</launchable>
     <description>
         <p>Synergy allows you to share one mouse and keyboard between multiple computers.</p>
         <p>Work seamlessly across Windows, macOS and Linux.</p>
