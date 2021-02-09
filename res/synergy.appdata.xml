@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop">
+    <id>synergy.desktop</id>
+    <name>Synergy</name>
+    <url type="homepage">https://symless.com/synergy</url>
+    <summary>Keyboard and mouse sharing solution</summary>
+    <description>
+        <p>Synergy allows you to share one mouse and keyboard between multiple computers.</p>
+        <p>Work seamlessly across Windows, macOS and Linux.</p>
+    </description>
+</component>
