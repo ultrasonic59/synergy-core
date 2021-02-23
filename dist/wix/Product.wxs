@@ -15,6 +15,8 @@
 			<ComponentGroupRef Id="ProductQtStylesComponents"/>
 			<ComponentGroupRef Id="ProductQtPluginComponents"/>
 			<ComponentRef Id="RegistryEntries"/>
+		</Feature>
+		<Feature Id="VC_Redist" Title="Visual C++ Runtime" AllowAdvertise="no" Display="hidden" Level="1">
 			<MergeRef Id="VC_Redist"/>
 		</Feature>
 		<DirectoryRef Id="TARGETDIR">
