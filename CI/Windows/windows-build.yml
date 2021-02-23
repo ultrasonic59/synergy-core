@@ -26,7 +26,6 @@ steps:
 
   - script: |
       cd $(Build.SourcesDirectory)
-      python -m aqt install -b $(QLI_BASE_URL) --outputdir $(Build.Repository.LocalPath)\\deps\\Qt  $(QT_VERSION) windows desktop win64_msvc2017_64
       python -m aqt install -b $(QLI_BASE_URL) --outputdir $(Build.Repository.LocalPath)\\deps\\Qt  $(QT_VERSION) windows desktop win32_msvc2017
     displayName: 'Install Qt $(QT_VERSION)'
 
@@ -44,34 +43,6 @@ steps:
         Get-ChildItem '.\deps'
         msiexec.exe /i ${pwd}\deps\Bonjour64.msi INSTALLDIR="${pwd}\deps\Bonjour" /qb
     displayName: 'Installing bonjour SDK'
-
-  - script: |
-      call "%ENV_BAT%" -arch=x64
-      set BONJOUR_SDK_HOME=%cd%\%BONJOUR_SDK_DIR%
-      mkdir build64
-      cd build64
-      IF "$(buildType)"=="enterprise" (
-          cmake -G "Visual Studio 16 2019" -A %MSARCH% -V -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=%QT_PATH% -DSYNERGY_ENTERPRISE=ON ..
-      ) else (
-          cmake -G "Visual Studio 16 2019" -A %MSARCH% -V -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=%QT_PATH% ..
-      )
-    displayName: 'Cmake x64 Standard'
-    env:
-      ENV_BAT: $(ENV_BAT)
-      BONJOUR_SDK_DIR: $(BONJOUR_SDK_DIR)
-      QT_PATH: $(QT_BIN_PATH)
-      MSARCH: 'x64'
-      GIT_COMMIT: $(Build.SourceVersion)
-
-  - script: |
-      call "%ENV_BAT%" -arch=x64
-      cd build64
-      call version
-      msbuild synergy-core.sln /p:Platform="x64" /p:Configuration=Release
-    displayName: 'Compiling x64'
-    env:
-      ENV_BAT: $(ENV_BAT)
-      GIT_COMMIT: $(Build.SourceVersion)
 
   - script: |
       call "%ENV_BAT%" -arch=x86
@@ -112,19 +83,6 @@ steps:
 
   - task: MSBuild@1
     inputs:
-      solution: 'build64/installer/Synergy.sln'
-      msbuildVersion: '16.0'
-      msbuildArchitecture: 'x64'
-      platform: 'x64'
-      configuration: 'Release'
-      msbuildArguments: '/m'
-      maximumCpuCount: true
-    displayName: 'Making installer x64'
-    env:
-      QT_PATH: $(QT_BIN_PATH)
-
-  - task: MSBuild@1
-    inputs:
       solution: 'build32/installer/Synergy.sln'
       msbuildVersion: '16.0'
       msbuildArchitecture: 'x86'
@@ -154,17 +112,6 @@ steps:
       replaceExistingArchive: true
       verbose: true
     displayName: "Archive 32-bit binaries"
-    condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
-
-  - task: ArchiveFiles@2
-    inputs:
-      rootFolderOrFile: 'build64\bin\Release'
-      includeRootFolder: false
-      archiveType: 'zip'
-      archiveFile: '$(Build.ArtifactStagingDirectory)/Synergy_win_x64.zip'
-      replaceExistingArchive: true
-      verbose: true
-    displayName: "Archive 64-bit binaries"
     condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
 
   - script: |
@@ -211,13 +158,3 @@ steps:
       targetFolder: 'synergy-core/v1-core-$(buildType)/$(SYNERGY_VERSION)/$(SYNERGY_VERSION_STAGE)/b$(SYNERGY_VERSION_BUILD)-$(SYNERGY_REVISION)/'
       readyTimeout: '20000'
     displayName: 'Send x86 Package to sandor'
-
-
-  - task: CopyFilesOverSSH@0
-    inputs:
-      sshEndpoint: 'Azure on Sandor'
-      sourceFolder: '$(Build.Repository.LocalPath)\build64\installer\bin\Release\'
-      contents: '*'
-      targetFolder: 'synergy-core/v1-core-$(buildType)/$(SYNERGY_VERSION)/$(SYNERGY_VERSION_STAGE)/b$(SYNERGY_VERSION_BUILD)-$(SYNERGY_REVISION)/'
-      readyTimeout: '20000'
-    displayName: 'Send x64 Package to sandor'
